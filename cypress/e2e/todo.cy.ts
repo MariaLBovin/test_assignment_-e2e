@@ -37,6 +37,7 @@ describe('should test if HTML is fetched', () => {
     cy.get('button').click()
 
     cy.get('#movie-container').should('not.have.attr', 'h3')
+    cy.get('p').contains('Inga sökresultat att visa')
     })
 })
 
@@ -64,6 +65,7 @@ describe('should test with mock-data', () => {
 
   })
 })
+
 describe('should test for errors', () => {
 
   it('should display error message', () => {
@@ -74,6 +76,16 @@ describe('should test for errors', () => {
     cy.get('form').submit()
 
     cy.get('p').contains('Inga sökresultat att visa')
+  })
+
+  it('should not have movie-divs', () => {
+    cy.intercept('get', "http://omdbapi.com/?apikey=416ed51a&s=*", {fixture:"nomovies"}).as('Nomoviedata')
+
+    cy.get('input').type('Sex and the City').should('have.value', 'Sex and the City')
+
+    cy.get('form').submit()
+
+    cy.get('#movie-container').should('not.have.attr', 'div')
 
   })
 
